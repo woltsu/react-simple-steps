@@ -43,5 +43,6 @@
     "stepper",
     "timeline"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "homepage": "https://github.com/woltsu/react-simple-steps#readme"
 }
