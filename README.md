@@ -6,7 +6,7 @@
 `import Steps from 'react-simple-steps'`
 
 ### How to use
-`<Steps steps={['first', 'second', 'third', 'fourth']} />`
+`<Steps title='Demo' steps={['first', 'second', 'third', 'fourth']} />`
 
 ### Optional props
 `title`, `showTitles`, `showCheckmarks`, `current`, `onStepChange`
