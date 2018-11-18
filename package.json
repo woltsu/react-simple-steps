@@ -35,5 +35,13 @@
     "@babel/preset-env": "^7.1.6",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.0-beta.6"
-  }
+  },
+  "keywords": [
+    "react",
+    "steps",
+    "simple",
+    "stepper",
+    "timeline"
+  ],
+  "license": "MIT"
 }
