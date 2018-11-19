@@ -146,7 +146,7 @@ const styles = {
     borderTop: 'none',
     borderLeft: 'none',
     transform: 'rotate(45deg)',
-    marginBottom: '3px'
+    marginBottom: '5px'
   },
   activeValue: {
     backgroundColor: 'white',
