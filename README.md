@@ -13,7 +13,8 @@
 `showTitles` = Boolean, default = true  
 `showCheckmarks` = Boolean, default = true  
 `current` = Number, index of the step to show  
-`onStepChange` = Function, gets the index of the clicked step as a parameter 
+`onStepChange` = Function, gets the index of the clicked step as a parameter  
+`disabled` = Boolean, default = false, makes clicking of the steps have no effect and sets the cursor to default (onStepChange will still be triggered)
 
 ## Notes
 For custom control one can use the `onStepChange` function and the `current` attribute:  

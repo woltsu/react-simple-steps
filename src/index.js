@@ -7,15 +7,17 @@ class Steps extends Component {
   }
 
   changeStep(step) {
-    const { onStepChange } = this.props
+    const { onStepChange, disabled = false } = this.props
     if (onStepChange) {
       onStepChange(step)
     }
-    this.setState({ current: step })
+    if (!disabled) {
+      this.setState({ current: step })
+    }
   }
 
   render() {
-    const { steps = [], title, showTitles = true, showCheckmarks = true } = this.props
+    const { steps = [], title, showTitles = true, showCheckmarks = true, disabled = false } = this.props
     const current = this.props.current ? this.props.current : this.state.current
     return (
       <div style={styles.stepsContainer}>
@@ -38,6 +40,7 @@ class Steps extends Component {
                 completed={completed}
                 showTitle={showTitles}
                 showCheckmark={showCheckmarks}
+                disabled={disabled}
               />
             )
           })  }
@@ -53,14 +56,15 @@ Steps.propTypes = {
   showTitles: PropTypes.bool,
   showCheckmarks: PropTypes.bool,
   current: PropTypes.number,
-  onStepChange: PropTypes.func
+  onStepChange: PropTypes.func,
+  disabled: PropTypes.bool
 }
 
-const Step = ({ value, title, before, after, handleClick, active, completed, showTitle, showCheckmark }) => {
+const Step = ({ value, title, before, after, handleClick, active, completed, showTitle, showCheckmark, disabled }) => {
   return (
     <div style={styles.step}>
       { before && <Before active={active} /> }
-      <span onClick={handleClick} style={{ ...styles.stepValue, ...(active && styles.activeValue) }}>
+      <span onClick={handleClick} style={{ ...styles.stepValue, ...(active && styles.activeValue), ...(disabled && styles.disabledValue) }}>
         { !(showCheckmark && completed) ? value + 1 : <CheckMark /> }
       </span>
       { showTitle && <span style={{ ...styles.stepTitle, ...(active && styles.activeTitle) }}>{ title }</span> }
@@ -157,6 +161,9 @@ const styles = {
   },
   activeLine: {
     borderColor: 'black'
+  },
+  disabledValue: {
+    cursor: 'default'
   }
 }
 
