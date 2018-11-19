@@ -15,7 +15,7 @@ class Steps extends Component {
   }
 
   render() {
-    const { steps, title, showTitles = true, showCheckmarks = true } = this.props
+    const { steps = [], title, showTitles = true, showCheckmarks = true } = this.props
     const current = this.props.current ? this.props.current : this.state.current
     return (
       <div style={styles.stepsContainer}>
