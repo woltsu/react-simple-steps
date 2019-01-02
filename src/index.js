@@ -1,13 +1,51 @@
-import React, { Component } from 'react'
+import React, { Component, PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import styles from './styles'
 
+/**
+ * @augments {Component<{steps:[], title:string, showTitles:boolean, showCheckmarks:boolean, current:number, onStepChange:(step:number), disabled:bool, colors: [] }>}
+ */
 class Steps extends Component {
   state = {
     current: 0
   }
 
-  changeStep(step) {
-    const { onStepChange, disabled = false } = this.props
+  static propTypes = {
+    /** Steps to render. */
+    steps: PropTypes.array,
+
+    /** Title of the stepper. */
+    title: PropTypes.string,
+
+    /** Show step titles below the steps. */
+    showTitles: PropTypes.bool,
+
+    /** Show checkmarks on passed steps */
+    showCheckmarks: PropTypes.bool,
+
+    /** The selected step. */
+    current: PropTypes.number,
+
+    /** Function that is triggered when a step is clicked. */
+    onStepChange: PropTypes.func,
+
+    /** Don't show pointer cursor above the steps */
+    disabled: PropTypes.bool,
+
+    /** Custom colors for steps */
+    colors: PropTypes.array
+  }
+
+  static defaultProps = {
+    steps: [],
+    showTitles: true,
+    showCheckmarks: true,
+    disabled: false,
+    colors: []
+  }
+
+  changeStep = (step) => {
+    const { onStepChange, disabled } = this.props
     if (onStepChange) {
       onStepChange(step)
     }
@@ -17,8 +55,8 @@ class Steps extends Component {
   }
 
   render() {
-    const { steps = [], title, showTitles = true, showCheckmarks = true, disabled = false } = this.props
-    const current = this.props.current ? this.props.current : this.state.current
+    const { steps, title, showTitles, showCheckmarks, disabled, current: customCurrent, colors } = this.props
+    const current = customCurrent ? customCurrent : this.state.current
     return (
       <div style={styles.stepsContainer}>
         { title && <span style={styles.stepsTitle}>{ title }</span> }
@@ -31,7 +69,7 @@ class Steps extends Component {
             return (
               <Step
                 handleClick={() => this.changeStep(i)}
-                key={i}
+                key={`step-${i}`}
                 value={i}
                 title={step}
                 before={before}
@@ -41,6 +79,7 @@ class Steps extends Component {
                 showTitle={showTitles}
                 showCheckmark={showCheckmarks}
                 disabled={disabled}
+                color={colors[i] || 'white'}
               />
             )
           })  }
@@ -50,27 +89,20 @@ class Steps extends Component {
   }
 }
 
-Steps.propTypes = {
-  steps: PropTypes.array.isRequired,
-  title: PropTypes.string,
-  showTitles: PropTypes.bool,
-  showCheckmarks: PropTypes.bool,
-  current: PropTypes.number,
-  onStepChange: PropTypes.func,
-  disabled: PropTypes.bool
-}
-
-const Step = ({ value, title, before, after, handleClick, active, completed, showTitle, showCheckmark, disabled }) => {
-  return (
-    <div style={styles.step}>
-      { before && <Before active={active} /> }
-      <span onClick={handleClick} style={{ ...styles.stepValue, ...(active && styles.activeValue), ...(disabled && styles.disabledValue) }}>
-        { !(showCheckmark && completed) ? value + 1 : <CheckMark /> }
-      </span>
-      { showTitle && <span style={{ ...styles.stepTitle, ...(active && styles.activeTitle) }}>{ title }</span> }
-      { after && <After active={active} /> }
-    </div>
-  )
+class Step extends PureComponent {
+  render() {
+    const { value, title, before, after, handleClick, active, completed, showTitle, showCheckmark, disabled, color: backgroundColor } = this.props
+    return (
+      <div style={styles.step}>
+        { before && <Before active={active} /> }
+        <span onClick={handleClick} style={{ ...styles.stepValue, ...(active && { ...styles.activeValue, backgroundColor }), ...(disabled && styles.disabledValue) }}>
+          { !(showCheckmark && completed) ? value + 1 : <CheckMark /> }
+        </span>
+        { showTitle && <span style={{ ...styles.stepTitle, ...(active && styles.activeTitle) }}>{ title }</span> }
+        { after && <After active={active} /> }
+      </div>
+    )
+  }
 }
 
 const Before = ({ active }) => <div style={{ ...styles.before, ...(active && styles.activeLine) }} />
@@ -78,93 +110,5 @@ const Before = ({ active }) => <div style={{ ...styles.before, ...(active && sty
 const After = ({ active }) => <div style={{ ...styles.after, ...(active && styles.activeLine) }} />
 
 const CheckMark = () => <div style={styles.checkMark} />
-
-const styles = { 
-  stepsContainer: {
-    textAlign: 'center',
-    padding: '10px',
-  },
-  stepsTitle: {
-    fontWeight: 600
-  },
-  steps: {
-    display: 'flex',
-    justifyContent: 'center',
-    width: '100%',
-    height: '100%',
-    marginTop: '10px',
-  },
-  step: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    flex: 1,
-    textAlign: 'center',
-    position: 'relative',
-  },
-  stepValue: {
-    height: '40px',
-    width: '40px',
-    border: '1px solid',
-    borderRadius: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: '10px',
-    backgroundColor: 'white',
-    borderColor: '#aab2be',
-    color: '#aab2be',
-    fontWeight: 550,
-    cursor: 'pointer',
-    userSelect: 'none',
-    zIndex: 2
-  },
-  stepTitle: {
-    fontSize: '12px',
-    fontWeight: 'bold',
-    color: '#aab2be'
-  },
-  before: {
-    borderTop: '2px solid',
-    borderColor: '#aab2be',
-    position: 'absolute',
-    top: '20px',
-    width: '50%',
-    left: 0
-  },
-  after: {
-    borderTop: '2px solid',
-    borderColor: '#aab2be',
-    position: 'absolute',
-    top: '20px',
-    width: '50%',
-    right: 0
-  },
-  checkMark: {
-    content: '',
-    display: 'block',
-    width: '8px',
-    height: '18px',
-    border: '2px solid black',
-    borderTop: 'none',
-    borderLeft: 'none',
-    transform: 'rotate(45deg)',
-    marginBottom: '5px'
-  },
-  activeValue: {
-    backgroundColor: 'white',
-    color: 'black',
-    borderColor: 'black'
-  },
-  activeTitle: {
-    color: 'black'
-  },
-  activeLine: {
-    borderColor: 'black'
-  },
-  disabledValue: {
-    cursor: 'default'
-  }
-}
 
 export default Steps
